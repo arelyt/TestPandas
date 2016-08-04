@@ -13,7 +13,7 @@ tick = pd.read_csv('RIM6_4.trd', usecols=(0, 1, 2, 3, 4, 5, 6),
 tick = tick.rename(columns={'<LAST>': 'Price', '<VOL>': 'Vol', '<DIRECTION>': 'Dir'})
 tick.ix[tick.Dir == 'Sell', 'VolSell'] = tick.Vol
 tick.ix[tick.Dir == 'Buy', 'VolBuy'] = tick.Vol
-Nticks = 1000  # Количество тиков для бара и ресэмплинг
+Nticks = 300  # Количество тиков для бара и ресэмплинг
 
 rows_list = []
 for i in range(0, len(tick.index), Nticks):
@@ -40,12 +40,13 @@ for i in range(0, len(tick.index), Nticks):
     rows_list.append(dict1)
 
 res = pd.DataFrame(rows_list)
-res['Dsec']=res['DeltaTime'].dt.total_seconds()
-res['TSpeedBuy']=res['TickBuy']/res['Dsec']
-res['TSpeedSell']=res['TickSell']/res['Dsec']
-res['VSpeedBuy']=res['VolBuy']/res['Dsec']
-res['VSpeedSell']=res['VolSell']/res['Dsec']
-
+res['Dsec'] = res['DeltaTime'].dt.total_seconds()
+res['TSpeedBuy'] = res['TickBuy']/res['Dsec']
+res['TSpeedSell'] = res['TickSell']/res['Dsec']
+res['VSpeedBuy'] = res['VolBuy']/res['Dsec']
+res['VSpeedSell'] = res['VolSell']/res['Dsec']
+res['OTO'] = ((res['TickBuy']-res['TickSell'])/(res['TickBuy']+res['TickSell'])*0.65
+            + (res['VolBuy']-res['VolSell'])/(res['VolBuy']+res['VolSell'])*0.35)*100.0
 mids = (res.open + res.close)/2
 spans = abs(res.close - res.open)
 # print res, mids, spans
@@ -53,15 +54,15 @@ inc = res.close > res.open
 dec = res.open > res.close
 
 w = 0.8
-print res.index[inc], mids, spans, inc, dec
-p = figure(x_range=(0, len(res.index)), plot_width=800, plot_height=600, title='RIM6 CandleStick')
-p.y_range=Range1d(start=90500, end=95000)
+# print res.index[inc], mids, spans, inc, dec
+p = figure(x_range=(0, len(res.index)), plot_width=1400, plot_height=1024, title='RIM6 CandleStick')
+p.y_range = Range1d(start=90500, end=95000)
 p.xaxis.major_label_orientation = pi/4
 p.grid.grid_line_alpha = 0.3
 p.segment(res.index.values, res.high, res.index.values, res.low, color='black')
 p.rect(res.index[inc], mids[inc], w, spans[inc], fill_color='#6CF350', line_color='green')
 p.rect(res.index[dec], mids[dec], w, spans[dec], fill_color='#FF0000', line_color='red')
-p.extra_y_ranges = {}
+# p.extra_y_ranges = {}
 p.extra_y_ranges['TickSpeed'] = Range1d(start=0, end=100)
 p.extra_y_ranges['OTO'] = Range1d(start=-60, end=60)
 #p.line(res.index, res.TSpeedBuy, color='blue', y_range_name='TickSpeed', alpha=0.5)
