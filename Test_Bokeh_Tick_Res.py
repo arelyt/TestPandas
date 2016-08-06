@@ -9,7 +9,7 @@ from bokeh.models import LogAxis, LinearAxis, Range1d
 
 
 tick = pd.read_csv('RIM6_4.trd', usecols=(0, 1, 2, 3, 4, 5, 6),
-                   parse_dates={'DateTime': [0,1]}, index_col=False)
+                   parse_dates={'DateTime': [0, 1]}, index_col=False)
 tick = tick.rename(columns={'<LAST>': 'Price', '<VOL>': 'Vol', '<DIRECTION>': 'Dir'})
 tick.ix[tick.Dir == 'Sell', 'VolSell'] = tick.Vol
 tick.ix[tick.Dir == 'Buy', 'VolBuy'] = tick.Vol
@@ -45,8 +45,8 @@ res['TSpeedBuy'] = res['TickBuy']/res['Dsec']
 res['TSpeedSell'] = res['TickSell']/res['Dsec']
 res['VSpeedBuy'] = res['VolBuy']/res['Dsec']
 res['VSpeedSell'] = res['VolSell']/res['Dsec']
-res['OTO'] = ((res['TickBuy']-res['TickSell'])/(res['TickBuy']+res['TickSell'])*0.65
-            + (res['VolBuy']-res['VolSell'])/(res['VolBuy']+res['VolSell'])*0.35)*100.0
+res['OTO'] = ((res['TickBuy']-res['TickSell'])/(res['TickBuy']+res['TickSell'])*0.65 +
+              (res['VolBuy']-res['VolSell'])/(res['VolBuy']+res['VolSell'])*0.35)*100.0
 mids = (res.open + res.close)/2
 spans = abs(res.close - res.open)
 # print res, mids, spans
@@ -65,9 +65,9 @@ p.rect(res.index[dec], mids[dec], w, spans[dec], fill_color='#FF0000', line_colo
 # p.extra_y_ranges = {}
 p.extra_y_ranges['TickSpeed'] = Range1d(start=0, end=100)
 p.extra_y_ranges['OTO'] = Range1d(start=-60, end=60)
-#p.line(res.index, res.TSpeedBuy, color='blue', y_range_name='TickSpeed', alpha=0.5)
+# p.line(res.index, res.TSpeedBuy, color='blue', y_range_name='TickSpeed', alpha=0.5)
 p.line(res.index, res.TSpeedBuy.rolling(window=4).median(), color='green', y_range_name='TickSpeed', alpha=0.8)
-#p.line(res.index, res.TSpeedSell, color='red', y_range_name='TickSpeed', alpha=0.5)
+# p.line(res.index, res.TSpeedSell, color='red', y_range_name='TickSpeed', alpha=0.5)
 p.line(res.index, res.TSpeedSell.rolling(window=9).median(), color='red', y_range_name='TickSpeed', alpha=0.8)
 p.line(res.index, res.OTO.rolling(window=15).mean(), color='brown', y_range_name='OTO', alpha=0.9)
 p.add_layout(LogAxis(y_range_name='TickSpeed'), 'left')
