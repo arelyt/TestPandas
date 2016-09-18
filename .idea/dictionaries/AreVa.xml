@@ -1,10 +1,23 @@
 <component name="ProjectDictionaryState">
   <dictionary name="AreVa">
     <words>
+      <w>bokeh</w>
+      <w>cumdelta</w>
+      <w>delt</w>
       <w>dsec</w>
       <w>dtime</w>
+      <w>fftfreq</w>
+      <w>fftpack</w>
+      <w>fftshift</w>
+      <w>gridplot</w>
+      <w>nback</w>
+      <w>ndeltas</w>
       <w>nticks</w>
       <w>resample</w>
+      <w>resfft</w>
+      <w>resfftfreq</w>
+      <w>rfft</w>
+      <w>scipy</w>
     </words>
   </dictionary>
 </component>
