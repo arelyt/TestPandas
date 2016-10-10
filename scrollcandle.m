@@ -14,7 +14,7 @@ figure('menubar', 'none',...
 
 x = b.DateTime(1:end);
 y = b.Price(1:end);
-d = 3;
+dx = 3;
 %% dx is the width of the axis 'window'
 %a=gca;
 plot(x, y, 'r');
@@ -23,7 +23,7 @@ plot(x, y, 'r');
 set(gcf, 'doublebuffer','on');
 %% This avoids flickering when updating the axis
 a = datenum(min(x));
-b = datenum(min(x)+hours(d));
+b = datenum(min(x)+hours(dx));
 set(gca, 'xlim', [a b]);
 set(gca, 'ylim', [min(y) max(y)]);
 
