@@ -8,7 +8,7 @@ figure('menubar', 'none',...
 
 x = p.DateTime(1:end);
 y = p.Price(1:end);
-dx = 3;
+dx = 1;
 %% dx is the width of the axis 'window'
 %a=gca;
 plot(x, y, 'r');
@@ -21,7 +21,7 @@ set(gcf, 'doublebuffer','on');
 a = min(x);
 b = min(x)+hours(dx);
 set(gca, 'xlim', [a b]);
-set(gca, 'ylim', [min(y) max(y)]);
+%set(gca, 'ylim', [min(y) max(y)]);
 
 % Generate constants for use in uicontrol initialization
 pos=get(gca,'position');
