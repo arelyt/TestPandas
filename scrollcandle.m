@@ -1,19 +1,13 @@
-function scrollcandle(b)
-% Created by Steven Lord, slord@mathworks.com
-% Uploaded to MATLAB Central
-% http://www.mathworks.com/matlabcentral
-% 7 May 2002
-%
-% Permission is granted to adapt this code for your own use.
-% However, if it is reposted this message must be intact.
+function scrollcandle(p)
+% Created by 
 
 % Generate and plot data
 figure('menubar', 'none',...
     'name', 'slider_plot_scroll',...
     'numbertitle', 'off');
 
-x = b.DateTime(1:end);
-y = b.Price(1:end);
+x = p.DateTime(1:end);
+y = p.Price(1:end);
 dx = 3;
 %% dx is the width of the axis 'window'
 %a=gca;
@@ -22,8 +16,10 @@ plot(x, y, 'r');
 % Set appropriate axis limits and settings
 set(gcf, 'doublebuffer','on');
 %% This avoids flickering when updating the axis
-a = datenum(min(x));
-b = datenum(min(x)+hours(dx));
+%a = datenum(min(x));
+%b = datenum(min(x)+hours(dx));
+a = min(x);
+b = min(x)+hours(dx);
 set(gca, 'xlim', [a b]);
 set(gca, 'ylim', [min(y) max(y)]);
 
