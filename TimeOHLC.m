@@ -2,33 +2,64 @@
 % *%%
 % *%%Начинаем OHLC свечи
 % %Функция для ресэмплинга по Дельте**
-function y = TimeOHLC(table, deltas)
-x = table.AbsCumDelta(1:deltas:end);
-y = table.Price(1:deltas:end);
+function y = TimeOHLC(t, deltas, method)
 
-%Цикл по OHLC
-op = zeros(1, int64(max(table.AbsCumDelta)/deltas));
-hi = zeros(1, int64(max(table.AbsCumDelta)/deltas));
-lo = zeros(1, int64(max(table.AbsCumDelta)/deltas));
-cl = zeros(1, int64(max(table.AbsCumDelta)/deltas));
-da = repmat(datetime(0, 0, 0, 0, 0, 0), 1, int64(max(table.AbsCumDelta)/deltas));
+tlen = height(t);  %Длина таблицы
 
-for i = 1:int64(max(table.AbsCumDelta)/deltas)
-    ss = (i-1)*deltas;      % Левая граница выбора
-    sd = deltas*i;           % Правая граница выбора
-    t = table.Price(table.AbsCumDelta>=ss & table.AbsCumDelta<sd);
-    da(i) = max(table.DateTime(table.AbsCumDelta>=ss & table.AbsCumDelta<sd));
-    hi(i) = max(t);
-    lo(i) = min(t);
-    op(i) = t(1);
-    cl(i) = t(end);
+temp = int64(tlen/deltas)-1;
+if method == 'tick' 
+
+        %Цикл по OHLC
+        op = zeros(1, temp);
+        hi = zeros(1, temp);
+        lo = zeros(1, temp);
+        cl = zeros(1, temp);
+        vBuy = zeros(1, temp);
+        vSell = zeros(1, temp);
+        nBuy = zeros(1, temp);
+        nSell = zeros(1, temp);
+        dTime = seconds(zeros(1, temp));
+        da = repmat(datetime(0, 0, 0, 0, 0, 0), 1, temp);
+
+        for i = 1:temp-2
+            if i < temp-2
+                ss = deltas*(i);      % Левая граница выбора
+                sd = deltas*(i+1);           % Правая граница выбора
+            else
+                ss = deltas*(i);
+                sd = tlen;
+            end
+            
+            da(i) = t.DateTime(sd, :);
+            hi(i) = max(t.Price(ss:sd, :));
+            lo(i) = min(t.Price(ss:sd, :));
+            op(i) = t.Price(ss, :);
+            cl(i) = t.Price(sd, :);
+            vBuy(i) = sum(t.VolBuy(ss:sd, :));
+            vSell(i) = sum(t.VolSell(ss:sd, :));
+            nBuy(i) = sum(t.VolBuy(ss:sd, :) ~= 0);
+            nSell(i) = sum(t.VolSell(ss:sd, :) ~= 0);
+            dTime(i) = t.DateTime(sd) - t.DateTime(ss);
+        end
+            d = datenum(da');
+            h = hi';
+            l = lo';
+            o = op';
+            c = cl';
+            vB = vBuy';
+            vS = vSell';
+            nB = nBuy';
+            nS = nSell';
+            dT = seconds(dTime)';
+            TspeedBuy = nB./dT;
+            TspeedSell = nS./dT;
+            vto = (nB.*vB - nS.*vS)./(nB.*vB + nS.*vS);
+            
+            y = table(d, h, l, o, c, vB, vS, nB, nS, dT, TspeedBuy, TspeedSell, vto);
+            
+            
 end
-    d = datenum(da');
-    h = hi';
-    l = lo';
-    o = op';
-    c = cl';
-    x1 = 1:int64(max(table.AbsCumDelta)/deltas);
 
-candle(h, l, c, o);
+
+% candle(h, l, c, o);
 
