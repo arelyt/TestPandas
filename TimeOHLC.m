@@ -6,7 +6,7 @@ function y = TimeOHLC(t, deltas, method)
 
 tlen = height(t);  %Длина таблицы
 
-temp = int64(tlen/deltas)-1;
+temp = int64(tlen/deltas)-2;
 if method == 'tick' 
 
         %Цикл по OHLC
@@ -21,8 +21,8 @@ if method == 'tick'
         dTime = seconds(zeros(1, temp));
         da = repmat(datetime(0, 0, 0, 0, 0, 0), 1, temp);
 
-        for i = 1:temp-2
-            if i < temp-2
+        for i = 1:temp
+            if i < temp
                 ss = deltas*(i);      % Левая граница выбора
                 sd = deltas*(i+1);           % Правая граница выбора
             else
