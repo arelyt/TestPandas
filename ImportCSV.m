@@ -5,7 +5,7 @@ function [w] = ImportCSV(fname)
 %    /Users/AreVa/PycharmProjects/TestPandas/tick.csv
 
 %% Initialize variables.
-filename = '/Users/admin/PycharmProjects/TestPandas/tick.csv';
+filename = 'tick.csv';
 delimiter = ',';
 startRow = 2;
 
