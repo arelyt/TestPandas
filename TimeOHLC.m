@@ -33,6 +33,7 @@ vto = [];
 VTO = [];
 switch method
     case 'tick'
+        sw = 0;
         temp = int64(tlen/deltas)-2;
         reserve_memory();
         
@@ -50,6 +51,7 @@ switch method
         
         
     case 'volume'
+        sw = 0;
         temp = int64(t.AbsCumDelta(end)/deltas) - 2;
         reserve_memory();
         i = 1;
@@ -69,7 +71,26 @@ switch method
         end
         revert_for_table();
         
-        
+    case 'timeseconds'
+        sw = 1;
+        ttable = table2timetable(t);
+%        DateTime = retime(ttable(:,{'DateTime'}), 'secondly');
+        high = retime(ttable(:,{'Price'}), 'secondly', 'max');
+        high.Properties.VariableNames{1} = 'high';
+        low = retime(ttable(:,{'Price'}), 'secondly', 'min');
+        low.Properties.VariableNames{1} = 'low';
+        open = retime(ttable(:,{'Price'}), 'secondly', 'firstvalue');
+        open.Properties.VariableNames{1} = 'open';
+        close = retime(ttable(:,{'Price'}), 'secondly', 'lastvalue');
+        close.Properties.VariableNames{1} = 'close';
+        vB = retime(ttable(:,{'VolBuy'}), 'secondly', 'sum');
+        vB.Properties.VariableNames{1} = 'vB';
+        vS = retime(ttable(:,{'VolSell'}), 'secondly', 'sum');
+        vS.Properties.VariableNames{1} = 'vS';
+        nB = retime(ttable(:,{'VolBuy'}), 'secondly', 'count');
+        nB.Properties.VariableNames{1} = 'nB';
+        nS = retime(ttable(:,{'VolSell'}), 'secondly', 'count');
+        nS.Properties.VariableNames{1} = 'nS';
 end
 
     function resample_volume()
@@ -142,8 +163,12 @@ end
         da = repmat(datetime(0, 0, 0, 0, 0, 0), 1, temp);
         
     end
-
-y = table(DateTime, high, low, open, close, vB, vS, nB, nS, dT, TsBuy, TsSell, VTO);
+if sw == 1
+    y  = [close vB vS nB nS];
+    y = timetable2table(y);
+    y.VTO = (y.vB.*y.nB - y.vS.*y.nS)./(y.vB.*y.nB + y.vS.*y.nS);
+    y = table2timetable(y);
+else
+    y = table(DateTime, high, low, open, close, vB, vS, nB, nS, dT, TsBuy, TsSell, VTO);
 end
-% candle(h, l, c, o);
-
+end

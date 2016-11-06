@@ -22,7 +22,8 @@ fileID = fopen(filename,'r');
 
 %% Read columns of data according to the format.
 %
-dataArray = textscan(fileID, formatSpec, 'Delimiter', delimiter, 'EmptyValue' ,NaN,'HeaderLines' ,startRow-1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
+dataArray = textscan(fileID, formatSpec, 'Delimiter', delimiter, 'EmptyValue' ,NaN,...
+                            'HeaderLines' ,startRow-1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
 
 %% Close the text file.
 fclose(fileID);
@@ -38,15 +39,13 @@ VolSell = dataArray{:, 4};
 Delta = VolBuy - VolSell;
 CumDelta = cumsum(Delta);
 AbsCumDelta = cumsum(abs(Delta));
-CumVolBuy = cumsum(VolBuy);
-CumVolSell = cumsum(VolSell);
-vto = (CumVolBuy-CumVolSell)./(CumVolBuy+CumVolSell);
+
 % For code requiring serial dates (datenum) instead of datetime, uncomment
 % the following line(s) below to return the imported dates as datenum(s).
 
 % DateTime=datenum(DateTime);
 %% Create table from variable
-w = table(DateTime, Price, VolBuy, VolSell, Delta, CumDelta, AbsCumDelta, CumVolBuy, CumVolSell, vto);
+w = table(DateTime, Price, VolBuy, VolSell, Delta, CumDelta, AbsCumDelta);
 
 %% Clear temporary variables
 clearvars filename delimiter startRow formatSpec fileID dataArray ans;
