@@ -74,6 +74,7 @@ switch method
     case 'timeseconds'
         sw = 1;
         ttable = table2timetable(t);
+        mysum = @(x) sum(x ~= 0);
 %        DateTime = retime(ttable(:,{'DateTime'}), 'secondly');
         high = retime(ttable(:,{'Price'}), 'secondly', 'max');
         high.Properties.VariableNames{1} = 'high';
@@ -87,12 +88,12 @@ switch method
         vB.Properties.VariableNames{1} = 'vB';
         vS = retime(ttable(:,{'VolSell'}), 'secondly', 'sum');
         vS.Properties.VariableNames{1} = 'vS';
-        nB = retime(ttable(:,{'VolBuy'}), 'secondly', 'count');
+        nB = retime(ttable(:,{'VolBuy'}), 'secondly', mysum);
         nB.Properties.VariableNames{1} = 'nB';
-        nS = retime(ttable(:,{'VolSell'}), 'secondly', 'count');
+        nS = retime(ttable(:,{'VolSell'}), 'secondly', mysum);
         nS.Properties.VariableNames{1} = 'nS';
 end
-
+   
     function resample_volume()
         
         da(i) = tt.DateTime(end);
