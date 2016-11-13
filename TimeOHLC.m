@@ -168,7 +168,7 @@ if sw == 1
     y  = [close vB vS nB nS];
     y = timetable2table(y);
     y.VTO = (y.vB.*y.nB - y.vS.*y.nS)./(y.vB.*y.nB + y.vS.*y.nS);
-    y = table2timetable(y);
+    y = fillmissing(table2timetable(y), 'linear');
 else
     y = table(DateTime, high, low, open, close, vB, vS, nB, nS, dT, TsBuy, TsSell, VTO);
 end
