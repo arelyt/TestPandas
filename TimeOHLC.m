@@ -165,10 +165,10 @@ end
         
     end
 if sw == 1
-    y  = [close vB vS nB nS];
-    y = timetable2table(y);
-    y.VTO = (y.vB.*y.nB - y.vS.*y.nS)./(y.vB.*y.nB + y.vS.*y.nS);
-    y = table2timetable(y);
+    p  = [close vB vS nB nS];
+    z= timetable2table(p);
+    z.VTO = fillmissing((z.vB.*z.nB - z.vS.*z.nS)./(z.vB.*z.nB + z.vS.*z.nS), 'linear');
+    y = table2timetable(z);
 else
     y = table(DateTime, high, low, open, close, vB, vS, nB, nS, dT, TsBuy, TsSell, VTO);
 end
