@@ -168,10 +168,13 @@ end
     end
 if sw == 1
     p  = [close vB vS nB nS];
-    z= timetable2table(p);
-    z.VTO = fillmissing((z.vB.*z.nB - z.vS.*z.nS)./(z.vB.*z.nB + z.vS.*z.nS), 'linear');
-    y = fillmissing(table2timetable(z), 'linear');
+    y = timetable2table(p);
+    y.VTO = fillmissing((y.vB.*y.nB - y.vS.*y.nS)./(y.vB.*y.nB + y.vS.*y.nS), 'linear');
+    y.close = fillmissing(y.close, 'previous');
+     
 else
     y = table(DateTime, high, low, open, close, vB, vS, nB, nS, dT, TsBuy, TsSell, VTO);
+    y.close = fillmissing(y.close, 'previous');
+    y.VTO = fillmissing(y.VTO, 'linear');
 end
 end

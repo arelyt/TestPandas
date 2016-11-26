@@ -37,15 +37,18 @@ Price = dataArray{:, 2};
 VolBuy = dataArray{:, 3};
 VolSell = dataArray{:, 4};
 Delta = VolBuy - VolSell;
+CumVolBuy = cumsum(VolBuy);
+CumVolSell = cumsum(VolSell);
 CumDelta = cumsum(Delta);
 AbsCumDelta = cumsum(abs(Delta));
+CumVTO = (CumVolBuy - CumVolSell)./(CumVolBuy+CumVolSell); 
 
 % For code requiring serial dates (datenum) instead of datetime, uncomment
 % the following line(s) below to return the imported dates as datenum(s).
 
 % DateTime=datenum(DateTime);
 %% Create table from variable
-w = table(DateTime, Price, VolBuy, VolSell, Delta, CumDelta, AbsCumDelta);
+w = table(DateTime, Price, VolBuy, VolSell, Delta, CumVolBuy, CumVolSell, CumDelta, AbsCumDelta, CumVTO);
 
 %% Clear temporary variables
 clearvars filename delimiter startRow formatSpec fileID dataArray ans;
