@@ -75,22 +75,24 @@ switch method
         sw = 1;
         ttable = table2timetable(t);
         mysum = @(x) sum(x ~= 0);
+        ti = [ttable.DateTime(1):seconds(deltas):ttable.DateTime(end)];
+        
 %        DateTime = retime(ttable(:,{'DateTime'}), 'secondly');
-        high = retime(ttable(:,{'Price'}), 'secondly', 'max');
+        high = retime(ttable(:,{'Price'}), ti, 'max');
         high.Properties.VariableNames{1} = 'high';
-        low = retime(ttable(:,{'Price'}), 'secondly', 'min');
+        low = retime(ttable(:,{'Price'}), ti, 'min');
         low.Properties.VariableNames{1} = 'low';
-        open = retime(ttable(:,{'Price'}), 'secondly', 'firstvalue');
+        open = retime(ttable(:,{'Price'}), ti, 'firstvalue');
         open.Properties.VariableNames{1} = 'open';
-        close = retime(ttable(:,{'Price'}), 'secondly', 'lastvalue');
+        close = retime(ttable(:,{'Price'}), ti, 'lastvalue');
         close.Properties.VariableNames{1} = 'close';
-        vB = retime(ttable(:,{'VolBuy'}), 'secondly', 'sum');
+        vB = retime(ttable(:,{'VolBuy'}), ti, 'sum');
         vB.Properties.VariableNames{1} = 'vB';
-        vS = retime(ttable(:,{'VolSell'}), 'secondly', 'sum');
+        vS = retime(ttable(:,{'VolSell'}), ti, 'sum');
         vS.Properties.VariableNames{1} = 'vS';
-        nB = retime(ttable(:,{'VolBuy'}), 'secondly', mysum);
+        nB = retime(ttable(:,{'VolBuy'}), ti, mysum);
         nB.Properties.VariableNames{1} = 'nB';
-        nS = retime(ttable(:,{'VolSell'}), 'secondly', mysum);
+        nS = retime(ttable(:,{'VolSell'}), ti, mysum);
         nS.Properties.VariableNames{1} = 'nS';
 end
    
@@ -168,7 +170,7 @@ if sw == 1
     p  = [close vB vS nB nS];
     z= timetable2table(p);
     z.VTO = fillmissing((z.vB.*z.nB - z.vS.*z.nS)./(z.vB.*z.nB + z.vS.*z.nS), 'linear');
-    y = table2timetable(z);
+    y = fillmissing(table2timetable(z), 'linear');
 else
     y = table(DateTime, high, low, open, close, vB, vS, nB, nS, dT, TsBuy, TsSell, VTO);
 end
